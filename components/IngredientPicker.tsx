@@ -32,18 +32,20 @@ export default function IngredientPicker({ ingredients, initialSelected = [] }: 
         <div className="flex flex-wrap gap-2">
           {selectedList.map(i => (
             <button key={i.id} onClick={() => toggle(i.id)}
-              className="flex items-center gap-1 bg-black text-white text-sm px-3 py-1 rounded-full">
+              className="flex items-center gap-1 bg-orange-500 text-white text-sm px-3 py-1 rounded-full hover:bg-orange-600 transition-colors">
               <span>{i.name}</span><span>✕</span>
             </button>
           ))}
         </div>
       )}
 
-      <div className="flex gap-2 border-b">
+      <div className="flex gap-2">
         {CATEGORIES.map(cat => (
           <button key={cat} onClick={() => setActiveCategory(cat)}
-            className={`pb-2 px-1 text-sm font-medium border-b-2 ${
-              activeCategory === cat ? 'border-black' : 'border-transparent text-gray-400'
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              activeCategory === cat
+                ? 'bg-orange-500 text-white'
+                : 'text-stone-500 hover:bg-stone-100'
             }`}>
             {cat}
           </button>
@@ -53,18 +55,21 @@ export default function IngredientPicker({ ingredients, initialSelected = [] }: 
       <div className="flex flex-wrap gap-2">
         {visible.map(i => (
           <button key={i.id} onClick={() => toggle(i.id)}
-            className={`text-sm px-3 py-1 rounded-full border ${
-              selected.has(i.id) ? 'bg-black text-white border-black' : 'border-gray-300'
+            className={`text-sm px-3 py-1.5 rounded-full border transition-colors ${
+              selected.has(i.id)
+                ? 'bg-orange-500 text-white border-orange-500'
+                : 'border-stone-200 text-stone-700 hover:border-orange-300 hover:text-orange-600'
             }`}>
             {i.name}
           </button>
         ))}
       </div>
 
-      <button onClick={() => router.push(`/recipes?ingredients=${Array.from(selected).join(',')}`)}
+      <button
+        onClick={() => router.push(`/recipes?ingredients=${Array.from(selected).join(',')}`)}
         disabled={selected.size === 0}
-        className="mt-2 bg-black text-white py-3 rounded-lg disabled:opacity-40">
-        레시피 찾기
+        className="mt-2 bg-orange-500 hover:bg-orange-600 text-white py-3.5 rounded-xl font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+        {selected.size > 0 ? `레시피 찾기 (${selected.size}개 선택됨)` : '레시피 찾기'}
       </button>
     </div>
   )

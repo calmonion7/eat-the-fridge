@@ -15,12 +15,14 @@ export default async function HomePage() {
   const initialSelected = fridgeItems.map(f => f.ingredient_id)
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       <div>
-        <h1 className="text-2xl font-bold">냉장고 재료로 레시피 찾기</h1>
-        <p className="text-gray-500 mt-1">갖고 있는 재료를 선택해주세요</p>
+        <h1 className="text-3xl font-bold text-stone-900">🍽️ 냉장고 재료로 레시피 찾기</h1>
+        <p className="text-stone-500 mt-2 text-base">갖고 있는 재료를 선택하면 만들 수 있는 레시피를 추천해드려요</p>
       </div>
-      <IngredientPicker ingredients={ingredients} initialSelected={initialSelected} />
+      <div className="bg-white rounded-2xl shadow-sm p-6 border border-stone-100">
+        <IngredientPicker ingredients={ingredients} initialSelected={initialSelected} />
+      </div>
     </div>
   )
 }
