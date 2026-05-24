@@ -62,7 +62,7 @@ recipes (
   id           uuid primary key,
   title        text not null,
   description  text,
-  instructions text not null,
+  instructions text[] not null,  -- 단계별 배열 ["1. 물을 끓인다", "2. ..."]
   image_url    text,
   created_at   timestamptz default now()
 )
@@ -100,7 +100,7 @@ favorites (
 ### 홈 (`/`)
 - 재료 카테고리별 탭 (채소, 고기, 유제품, 양념, 기타)
 - 탭 아래 재료 칩(chip) 목록 — 클릭으로 선택/해제
-- 텍스트 검색창으로 재료 직접 입력 가능 (자동완성)
+- 텍스트 검색창으로 재료명 검색 (DB 재료 자동완성 — DB에 없는 재료는 추가 불가)
 - 선택된 재료 상단에 뱃지로 표시 + 개별 제거 가능
 - "냉장고에서 불러오기" 버튼 (로그인 유저)
 - "레시피 찾기" 버튼 → `/recipes?ingredients=id1,id2,...`
