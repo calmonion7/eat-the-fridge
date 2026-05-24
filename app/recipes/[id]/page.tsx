@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import { getRecipeWithIngredients } from '@/lib/db/recipes'
 import { isFavorite } from '@/lib/db/favorites'
 import { createClient } from '@/lib/supabase/server'
@@ -22,8 +23,11 @@ export default async function RecipeDetailPage({ params, searchParams }: Props) 
   const { data: { user } } = await supabase.auth.getUser()
   const favorited = user ? await isFavorite(user.id, id) : false
 
+  const backUrl = ingredients ? `/recipes?ingredients=${ingredients}` : '/recipes'
+
   return (
     <div className="flex flex-col gap-6">
+      <Link href={backUrl} className="text-sm text-gray-500 hover:underline">← 레시피 목록</Link>
       {recipe.image_url && (
         <div className="relative h-64 w-full rounded-lg overflow-hidden">
           <Image src={recipe.image_url} alt={recipe.title} fill className="object-cover" />

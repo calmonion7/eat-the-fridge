@@ -2,6 +2,7 @@ import { searchRecipes } from '@/lib/db/recipes'
 import RecipeCard from '@/components/RecipeCard'
 import ExactFilterToggle from '@/components/ExactFilterToggle'
 import { Suspense } from 'react'
+import Link from 'next/link'
 
 interface Props {
   searchParams: Promise<{ ingredients?: string; exact?: string }>
@@ -22,6 +23,7 @@ export default async function RecipesPage({ searchParams }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
+      <Link href="/" className="text-sm text-gray-500 hover:underline">← 재료 다시 선택</Link>
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h1 className="text-xl font-bold">레시피 {recipes.length}개</h1>
         <Suspense>
