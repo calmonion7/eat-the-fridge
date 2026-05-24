@@ -113,6 +113,27 @@ function extractGeneric($: cheerio.CheerioAPI, url: string): Partial<ScrapedReci
   return { title, description, image_url, instructions: [], ingredients: [] }
 }
 
+export async function crawlRecipeUrls(limit = 5): Promise<string[]> {
+  const html = await fetch('https://www.10000recipe.com/recipe/list.html?type=best', {
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept-Language': 'ko-KR,ko;q=0.9',
+    },
+  }).then(r => r.text())
+
+  const $ = cheerio.load(html)
+  const urls = new Set<string>()
+
+  $('a[href]').each((_, el) => {
+    const href = $(el).attr('href') ?? ''
+    if (/^\/recipe\/\d+$/.test(href)) {
+      urls.add(`https://www.10000recipe.com${href}`)
+    }
+  })
+
+  return Array.from(urls).slice(0, limit)
+}
+
 export async function scrapeRecipe(url: string): Promise<ScrapedRecipe> {
   const html = await fetch(url, {
     headers: {
