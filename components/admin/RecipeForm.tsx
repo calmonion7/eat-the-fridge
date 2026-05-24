@@ -7,6 +7,9 @@ interface IngredientEntry { id: string; amount: string; unit: string }
 interface Props { allIngredients: Ingredient[] }
 
 export default function RecipeForm({ allIngredients }: Props) {
+  const [scrapeUrl, setScrapeUrl] = useState('')
+  const [scraping, setScraping] = useState(false)
+  const [scrapeError, setScrapeError] = useState('')
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [instructions, setInstructions] = useState<string[]>([''])
@@ -14,6 +17,31 @@ export default function RecipeForm({ allIngredients }: Props) {
   const [recipeIngredients, setRecipeIngredients] = useState<IngredientEntry[]>([])
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+
+  async function handleScrape() {
+    if (!scrapeUrl) return
+    setScraping(true)
+    setScrapeError('')
+    try {
+      const res = await fetch('/api/admin/recipes/scrape', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: scrapeUrl }),
+      })
+      if (!res.ok) throw new Error('스크래핑 실패')
+      const data = await res.json()
+      setTitle(data.title ?? '')
+      setDescription(data.description ?? '')
+      setInstructions(data.instructions?.length ? data.instructions : [''])
+      setImageUrl(data.image_url ?? '')
+      setRecipeIngredients(data.ingredients ?? [])
+      router.refresh() // reload allIngredients in case new ones were added
+    } catch {
+      setScrapeError('레시피를 가져오지 못했어요. URL을 확인해주세요.')
+    } finally {
+      setScraping(false)
+    }
+  }
 
   function updateStep(i: number, val: string) {
     setInstructions(prev => prev.map((s, idx) => idx === i ? val : s))
@@ -42,6 +70,21 @@ export default function RecipeForm({ allIngredients }: Props) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 border rounded-lg p-4">
       <h2 className="font-semibold">새 레시피 추가</h2>
+
+      <div className="flex flex-col gap-2 bg-orange-50 border border-orange-200 rounded-lg p-3">
+        <p className="text-sm font-medium text-orange-800">URL로 자동 가져오기</p>
+        <div className="flex gap-2">
+          <input value={scrapeUrl} onChange={e => setScrapeUrl(e.target.value)}
+            placeholder="레시피 URL 붙여넣기 (만개의레시피 등)"
+            className="flex-1 border rounded px-3 py-2 text-sm" />
+          <button type="button" onClick={handleScrape} disabled={scraping || !scrapeUrl}
+            className="bg-orange-500 text-white px-4 py-2 rounded text-sm disabled:opacity-50 whitespace-nowrap">
+            {scraping ? '가져오는 중...' : '가져오기'}
+          </button>
+        </div>
+        {scrapeError && <p className="text-red-500 text-xs">{scrapeError}</p>}
+      </div>
+
       <input value={title} onChange={e => setTitle(e.target.value)} required
         placeholder="레시피 이름" className="border rounded px-3 py-2 text-sm" />
       <textarea value={description} onChange={e => setDescription(e.target.value)}
