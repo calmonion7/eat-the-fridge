@@ -4,7 +4,7 @@ import type { Ingredient } from '@/lib/types'
 export async function getIngredients(): Promise<Ingredient[]> {
   const supabase = await createClient()
   const { data, error } = await supabase.from('ingredients').select('*').order('name')
-  if (error) throw new Error(error.message)
+  if (error) throw error
   return data
 }
 

@@ -30,7 +30,7 @@ describe('getIngredients', () => {
   })
 
   it('throws on DB error', async () => {
-    mockCreateClient.mockResolvedValue(makeChain({ data: null, error: { message: 'fail' } }) as any)
+    mockCreateClient.mockResolvedValue(makeChain({ data: null, error: new Error('fail') }) as any)
     await expect(getIngredients()).rejects.toThrow()
   })
 })
@@ -40,6 +40,13 @@ describe('searchIngredients', () => {
     const mockData = [{ id: '2', name: '당근', category: '채소' }]
     mockCreateClient.mockResolvedValue(makeChain({ data: mockData }) as any)
     expect(await searchIngredients('당')).toEqual(mockData)
+  })
+
+  it('throws on error', async () => {
+    mockCreateClient.mockResolvedValue(
+      makeChain({ data: null, error: new Error('fail') }) as any
+    )
+    await expect(searchIngredients('test')).rejects.toThrow()
   })
 })
 
