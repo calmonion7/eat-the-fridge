@@ -9,9 +9,6 @@ export const metadata: Metadata = {
   title: '냉털 — 냉장고 재료로 레시피 찾기',
   description: '냉장고에 있는 재료로 만들 수 있는 레시피를 추천해드립니다',
   manifest: '/manifest.json',
-  icons: {
-    icon: '/favicon.ico?v=2',
-  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
