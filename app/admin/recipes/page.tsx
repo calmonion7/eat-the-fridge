@@ -3,6 +3,7 @@ import { getIngredients } from '@/lib/db/ingredients'
 import RecipeForm from '@/components/admin/RecipeForm'
 import RecipeTable from '@/components/admin/RecipeTable'
 import CrawlButton from '@/components/admin/CrawlButton'
+import AdminNav from '@/components/admin/AdminNav'
 import type { Recipe } from '@/lib/types'
 
 export default async function AdminRecipesPage() {
@@ -16,7 +17,8 @@ export default async function AdminRecipesPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold">레시피 관리</h1>
+      <h1 className="text-2xl font-bold">관리자</h1>
+      <AdminNav active="recipes" />
       <CrawlButton />
       <RecipeForm allIngredients={allIngredients} />
       <RecipeTable recipes={(recipes ?? []) as Recipe[]} />
